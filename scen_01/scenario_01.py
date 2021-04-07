@@ -35,20 +35,30 @@ def list_cm():
 
 def post_geofile(file_name):
     """ Post a raster on the API"""
-    path = join(dirname(abspath(__file__)), "testdata", file_name)
-    if not isfile(path):
-        raise ValueError("File doesn't exist.")
+    paths = [
+        geofile
+        for geofile in os.listdir(path=join(dirname(abspath(__file__)), "testdata"))
+        if geofile.endswith(".tif")
+    ]
 
-    with open(path, "rb") as file:
-        files = {
-            "file": ("frontend_name_" + str(uuid.uuid1()) + ".tif", file, "image/tiff")
-        }
-        try:
-            resp = requests.post(settings.GEOFILE_ENDPOINT, files=files)
-            return resp.ok
-        except ConnectionError:
-            print("Error during the post of the file.")
-            return False
+    for path in paths:
+        if not isfile(path):
+            raise ValueError("File doesn't exist.")
+
+        with open(path, "rb") as file:
+            files = {
+                "file": (
+                    "frontend_name_" + str(uuid.uuid1()) + ".tif",
+                    file,
+                    "image/tiff",
+                )
+            }
+            try:
+                resp = requests.post(settings.GEOFILE_ENDPOINT, files=files)
+                return resp.ok
+            except ConnectionError:
+                print("Error during the post of the file.")
+                return False
 
 
 def scenario_01():
