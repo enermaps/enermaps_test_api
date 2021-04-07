@@ -62,7 +62,13 @@ def post_geofile(file_name):
 
 
 def scenario_01():
+    try:
+        list_geofile()
+        list_cm()
+        post_geofile(file_name="big_test.tif")
+        post_geofile(file_name="small_test.tif")
     # TODO implement the case in which a user adds/retrieves layers and call a non existing CM
     # (following scenario 01)
     # You can call global variables like this: settings.CM_ENDPOINT
-    raise NotImplementedError("Scenario 01 not implemented")
+    except:
+        raise NotImplementedError("Scenario 01 not implemented")
