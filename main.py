@@ -2,9 +2,11 @@ import requests
 import uuid
 from os.path import join, dirname, abspath, isfile
 
-GEOFILE_ENDPONT ='http://127.0.0.1:7000/api/geofile/'
-CM_ENDPOINT = 'http://127.0.0.1:7000/api/cm/'
+from scen_01 import scenario_01
+import settings
 
+
+#TODO remove all the following functions (and use them in the diffrent scenario)
 def list_geofile():
     """ Return a list of the geofile name"""
     response = requests.get(GEOFILE_ENDPONT)
@@ -39,7 +41,8 @@ def post_geofile(file_name):
             return False
 
 if __name__ == '__main__':
-    list_geofile()
-    list_cm()
-    post_geofile("small_test.tif")
-    post_geofile("big_test.tif")
+    # Initialize the global variables once
+    settings.init()
+
+    #TODO call the different scenario
+    scenario_01.scenario_01()
