@@ -1,10 +1,10 @@
 import inspect
+import json
 import os
 import sys
 import uuid
 from os.path import abspath, dirname, isfile, join
 
-import json
 import requests
 from requests.compat import urljoin
 
@@ -61,8 +61,11 @@ def post_geofile(*filenames):
             try:
                 requests.post(settings.GEOFILE_ENDPOINT, files=files)
             except:
-                raise requests.ConnectionError("Error occurred during the post of the file.")
+                raise requests.ConnectionError(
+                    "Error occurred during the post of the file."
+                )
     return True, len(filenames)
+
 
 def list_cm():
     """ Return a list of the cm"""
@@ -70,46 +73,58 @@ def list_cm():
     try:
         cms_list = response.json()["cms"]
     except:
-        raise KeyError("\"cms\" key does not exist.")
+        raise KeyError('"cms" key does not exist.')
     cms = dict()
     for i, cm in enumerate(cms_list):
         try:
             pretty_name = cm["pretty_name"]
             name = cm["name"]
         except:
-            raise KeyError("\"pretty_name\" key does not exist.")
-        cms.update({i : [ {"name": name}, {"pretty_name": pretty_name }]})
+            raise KeyError('"pretty_name" key does not exist.')
+        cms.update({i: [{"name": name}, {"pretty_name": pretty_name}]})
     return cms
 
 
-def create_task(cm_name: str, is_fake_cm: bool=False):
+def create_task(cm_name: str, is_fake_cm: bool = False):
     if is_fake_cm:
         cm_name += "_fake"
     headers = {
-        'Connection': 'keep-alive',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36 Edg/89.0.774.68',
-        'Content-Type': 'application/json',
-        'Accept': '*/*',
-        'Origin': 'http://127.0.0.1:7000',
-        'Sec-Fetch-Site': 'same-origin',
-        'Sec-Fetch-Mode': 'cors',
-        'Sec-Fetch-Dest': 'empty',
-        'Referer': 'http://127.0.0.1:7000/',
-        'Accept-Language': 'fr,fr-FR;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
+        "Connection": "keep-alive",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36 Edg/89.0.774.68",
+        "Content-Type": "application/json",
+        "Accept": "*/*",
+        "Origin": "http://127.0.0.1:7000",
+        "Sec-Fetch-Site": "same-origin",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Dest": "empty",
+        "Referer": "http://127.0.0.1:7000/",
+        "Accept-Language": "fr,fr-FR;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6",
     }
-    data = {"selection":
-                {"type":"FeatureCollection",
-                 "features":[
-                     {"type":"Feature",
-                      "properties":{},
-                      "geometry":
-                          {"type":"Polygon",
-                           "coordinates":[[[-0.993347,51.407202],[-0.411072,51.41177],[-0.383606,51.012603],[-1.018982,51.036788],[-0.993347,51.407202]]]
-                           }
-                      }
-                ]},
-            "layers":["gfa_tot_curr_density.tiff"],
-            "parameters":{"factor":3}}
+    data = {
+        "selection": {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "properties": {},
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                            [
+                                [-0.993347, 51.407202],
+                                [-0.411072, 51.41177],
+                                [-0.383606, 51.012603],
+                                [-1.018982, 51.036788],
+                                [-0.993347, 51.407202],
+                            ]
+                        ],
+                    },
+                }
+            ],
+        },
+        "layers": ["gfa_tot_curr_density.tiff"],
+        "parameters": {"factor": 3},
+    }
     url = urljoin(settings.CM_ENDPOINT, cm_name + "/task")
     response = requests.post(url=url, headers=headers, json=data)
     try:
@@ -138,9 +153,16 @@ def get_task(task_url: str):
         status = dict_task["status"]
     return dict_task
 
+
 def delete_task(task_url: str):
     # TODO : can delete a taks for the moment
-    response = requests.delete(url=task_url, headers={'accept': 'application/json',}, allow_redirects=True)
+    response = requests.delete(
+        url=task_url,
+        headers={
+            "accept": "application/json",
+        },
+        allow_redirects=True,
+    )
 
 
 def scenario_01():
@@ -148,7 +170,7 @@ def scenario_01():
     layers = list_layers()
     assert len(layers) == 0, "Layer(s) on the API : {} .".format(layers)
     post_response, layers_number = post_geofile("big_test.tif", "small_test.tif")
-    assert  post_response is True, "Geofiles posting goes wrong."
+    assert post_response is True, "Geofiles posting goes wrong."
     layers = list_layers()
     assert len(layers) == layers_number, "Layer(s) on the API : {} .".format(layers)
     cms = list_cm()
