@@ -5,6 +5,7 @@ import sys
 import uuid
 from os.path import abspath, dirname, isfile, join
 
+import jsonschema
 import requests
 import validators
 from requests.compat import urljoin
@@ -155,6 +156,11 @@ def get_task(task_url: str):
             raise requests.ConnectionError("URL is not valid : {}".format(task_url))
         dict_task = response.json()
         status = dict_task["status"]
+    try:
+        jsonschema.validate(instance=dict_task, schema=settings.TASK_RESPONSE_SCHEMA)
+    except jsonschema.ValidationError as error:
+        raise ValueError(str(error))
+
     return dict_task
 
 
@@ -172,7 +178,7 @@ def delete_task(task_url: str):
 
 def scenario_01():
     response = server_working()
-    assert response is True,  "Server is not working."
+    assert response is True, "Server is not working."
     layers = list_layers()
     assert len(layers) == 0, "Layer(s) on the API : {} .".format(layers)
     post_response, layers_number = post_geofiles("big_test.tif", "small_test.tif")
@@ -182,6 +188,6 @@ def scenario_01():
     cms = list_cms()
     assert len(cms) == settings.NUMBER_OF_CMS, "CMs implemeted : {}.".format(cms)
     task_url = create_task(cm_name="BaseCM.cm_base.multiply_raster")
-    get_task(task_url=task_url)
+    task = get_task(task_url=task_url)
     delete_task(task_url=task_url)
-    get_task(task_url=task_url)
+    task = get_task(task_url=task_url)
