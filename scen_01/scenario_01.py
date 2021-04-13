@@ -79,9 +79,13 @@ def list_cms():
     for i, cm in enumerate(cms_list):
         try:
             pretty_name = cm["pretty_name"]
-            name = cm["name"]
         except:
             raise KeyError('"pretty_name" key does not exist.')
+        try:
+            name = cm["name"]
+        except:
+            raise KeyError('"name" key does not exist.')
+
         cms.update({i: [{"name": name}, {"pretty_name": pretty_name}]})
     return cms
 
