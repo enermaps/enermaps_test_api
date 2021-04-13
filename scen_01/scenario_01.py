@@ -37,7 +37,7 @@ def list_layers():
         response = requests.get(settings.GEOFILE_ENDPOINT)
         keys = response.json().keys()
     except:
-        raise requests.ConnectionError("Impossible to reach to /geofile/ endpoint.")
+        raise requests.ConnectionError("Impossible to reach to endpoint : {}".format(settings.GEOFILE_ENDPOINT))
     geofiles = [geofile for geofile in keys if geofile not in settings.SELECTION_LAYER]
     return geofiles
 
