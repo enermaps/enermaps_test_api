@@ -133,6 +133,7 @@ def create_task(cm_name: str, is_fake_cm: bool = False):
     url = urljoin(settings.CM_ENDPOINT, cm_name + "/task")
     assert validators.url(url) is True, "URL is not valid : {}".format(url)
     response = requests.post(url=url, headers=headers, json=data)
+    assert response.status_code != 404, "This CM does not exist : {}".format(cm_name)
     try:
         dict_task = response.json()
         try:
