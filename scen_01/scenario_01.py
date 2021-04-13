@@ -40,7 +40,7 @@ def list_layers():
     return geofiles
 
 
-def post_geofile(*filenames):
+def post_geofiles(*filenames):
     """Post a raster on the API."""
     for filename in filenames:
         if not isinstance(filename, str):
@@ -66,7 +66,7 @@ def post_geofile(*filenames):
     return True, len(filenames)
 
 
-def list_cm():
+def list_cms():
     """ Return a list of the cm"""
     response = requests.get(settings.CM_ENDPOINT)
     try:
@@ -169,11 +169,11 @@ def scenario_01():
     assert response is True,  "Server is not working."
     layers = list_layers()
     assert len(layers) == 0, "Layer(s) on the API : {} .".format(layers)
-    post_response, layers_number = post_geofile("big_test.tif", "small_test.tif")
+    post_response, layers_number = post_geofiles("big_test.tif", "small_test.tif")
     assert post_response is True, "Geofiles posting goes wrong."
     layers = list_layers()
     assert len(layers) == layers_number, "Layer(s) on the API : {} .".format(layers)
-    cms = list_cm()
+    cms = list_cms()
     assert len(cms) == 2, "CMs implemeted : {}.".format(cms)
     task_url = create_task(cm_name="BaseCM.cm_base.multiply_raster")
     get_task(task_url=task_url)
