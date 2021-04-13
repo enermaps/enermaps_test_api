@@ -150,10 +150,17 @@ def create_task(cm_name: str, is_fake_cm: bool = False):
     return task_url
 
 
+class CMFailedError(Exception):
+    """Exception thrown when calculation module failed."""
+    pass
+
+
 def get_task(task_url: str):
     assert validators.url(task_url) is True, "URL is not valid : {}".format(task_url)
     status = "PENDING"
-    while status == "PENDING":
+    while status != "SUCCESS":
+        if status == "FAILURE":
+            raise CMFailedError("The task request failed.")
         try:
             response = requests.get(url=task_url)
         except:
@@ -162,8 +169,8 @@ def get_task(task_url: str):
         status = dict_task["status"]
     try:
         jsonschema.validate(instance=dict_task, schema=settings.TASK_RESPONSE_SCHEMA)
-    except jsonschema.ValidationError as error:
-        raise ValueError(str(error))
+    except jsonschema.ValidationError:
+        raise ValueError("The response is not valid : {}".format(dict_task))
 
     return dict_task
 

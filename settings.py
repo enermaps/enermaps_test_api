@@ -24,9 +24,7 @@ def init():
             "status": {"type": "string"},
             "task_id": {"type": "string"},
             "cm_name": {"type": "string"},
-            "result": {
-                "type": "object",
-            },
+            "result": {"type": "object"},
         },
         "required": ["status", "task_id", "cm_name", "result"],
     }
