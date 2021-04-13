@@ -60,12 +60,12 @@ def post_geofiles(*filenames):
                 )
             }
             try:
-                requests.post(settings.GEOFILE_ENDPOINT, files=files)
+                response = requests.post(settings.GEOFILE_ENDPOINT, files=files)
             except:
                 raise requests.ConnectionError(
                     "Error occurred during the post of the file."
                 )
-    return True, len(filenames)
+    return response.status_code, len(filenames)
 
 
 def list_cms():
@@ -193,7 +193,7 @@ def scenario_01():
     layers = list_layers()
     assert len(layers) == 0, "Layer(s) on the API : {} .".format(layers)
     post_response, layers_number = post_geofiles("big_test.tif", "small_test.tif")
-    assert post_response is True, "Geofiles posting goes wrong."
+    assert post_response == 200, "Geofiles posting goes wrong."
     layers = list_layers()
     assert len(layers) == layers_number, "Layer(s) on the API : {} .".format(layers)
     cms = list_cms()
