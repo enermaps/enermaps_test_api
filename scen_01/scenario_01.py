@@ -15,7 +15,6 @@ parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
 
-# TODO remove all the following functions (and use them in the different scenario)
 def server_working():
     """Check if EnerMaps server give a response with status code 200."""
     try:
