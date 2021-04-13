@@ -176,8 +176,10 @@ def get_task(task_url: str):
     return dict_task
 
 
-def delete_task(task_url: str):
+def delete_task(task_url: str, is_fake_cm: bool = True):
     assert validators.url(task_url) is True, "URL is not valid : {}".format(task_url)
+    if is_fake_cm:
+        task_url += "_fake"
     response = requests.delete(
         url=task_url,
         headers={
