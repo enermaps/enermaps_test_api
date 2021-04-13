@@ -165,7 +165,8 @@ def delete_task(task_url: str):
 
 
 def scenario_01():
-    server_working()
+    response = server_working()
+    assert response is True,  "Server is not working."
     layers = list_layers()
     assert len(layers) == 0, "Layer(s) on the API : {} .".format(layers)
     post_response, layers_number = post_geofile("big_test.tif", "small_test.tif")
