@@ -3,6 +3,7 @@ def init():
     global CM_ENDPOINT
     global ENERMAPS_SERVER
     global SELECTION_LAYER
+    global NUMBER_OF_CMS
 
     GEOFILE_ENDPOINT = "http://127.0.0.1:7000/api/geofile/"
     CM_ENDPOINT = "http://127.0.0.1:7000/api/cm/"
@@ -15,3 +16,4 @@ def init():
         "nuts1.zip",
         "gfa_tot_curr_density.tiff",
     ]
+    NUMBER_OF_CMS = 2

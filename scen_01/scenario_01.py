@@ -174,7 +174,7 @@ def scenario_01():
     layers = list_layers()
     assert len(layers) == layers_number, "Layer(s) on the API : {} .".format(layers)
     cms = list_cms()
-    assert len(cms) == 2, "CMs implemeted : {}.".format(cms)
+    assert len(cms) == settings.NUMBER_OF_CMS, "CMs implemeted : {}.".format(cms)
     task_url = create_task(cm_name="BaseCM.cm_base.multiply_raster")
     get_task(task_url=task_url)
     delete_task(task_url=task_url)
