@@ -177,7 +177,6 @@ def get_task(task_url: str):
 
 def delete_task(task_url: str):
     assert validators.url(task_url) is True, "URL is not valid : {}".format(task_url)
-    # TODO : can delete a taks for the moment
     response = requests.delete(
         url=task_url,
         headers={
@@ -185,6 +184,7 @@ def delete_task(task_url: str):
         },
         allow_redirects=True,
     )
+    return response.status_code
 
 
 def scenario_01():
@@ -200,5 +200,6 @@ def scenario_01():
     assert len(cms) == settings.NUMBER_OF_CMS, "CMs implemeted : {}.".format(cms)
     task_url = create_task(cm_name="BaseCM.cm_base.multiply_raster")
     task = get_task(task_url=task_url)
-    delete_task(task_url=task_url)
+    delete_response = delete_task(task_url=task_url)
+    assert delete_response == 200, "The task is not correctly deleted."
     task = get_task(task_url=task_url)
