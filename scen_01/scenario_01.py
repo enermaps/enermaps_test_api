@@ -6,6 +6,7 @@ import uuid
 from os.path import abspath, dirname, isfile, join
 
 import requests
+import validators
 from requests.compat import urljoin
 
 import settings
@@ -125,6 +126,7 @@ def create_task(cm_name: str, is_fake_cm: bool = False):
         "parameters": {"factor": 3},
     }
     url = urljoin(settings.CM_ENDPOINT, cm_name + "/task")
+    assert validators.url(url) is True, "URL is not valid : {}".format(url)
     response = requests.post(url=url, headers=headers, json=data)
     try:
         dict_task = response.json()
@@ -138,10 +140,13 @@ def create_task(cm_name: str, is_fake_cm: bool = False):
     except json.JSONDecodeError as err:
         err.msg += ", content received was " + response.text
         raise err
-    return response.url
+    task_url = response.url
+    assert validators.url(task_url) is True, "URL is not valid : {}".format(task_url)
+    return task_url
 
 
 def get_task(task_url: str):
+    assert validators.url(task_url) is True, "URL is not valid : {}".format(task_url)
     status = "PENDING"
     while status == "PENDING":
         try:
@@ -154,6 +159,7 @@ def get_task(task_url: str):
 
 
 def delete_task(task_url: str):
+    assert validators.url(task_url) is True, "URL is not valid : {}".format(task_url)
     # TODO : can delete a taks for the moment
     response = requests.delete(
         url=task_url,
